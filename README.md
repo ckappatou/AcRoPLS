@@ -20,4 +20,4 @@ The optimization is performed using [ENTMOOT](https://github.com/cog-imperial/en
 
 | Contributor      | Acknowledgements          |
 | ---------------- | ------------------------- |
-| Chryssa Kappatou     | This research was funded by an Engineering and Physical Sciences Research Council / Eli Lilly Prosperity Partnership (EPSRC EP/T005556/1) and by Eli Lilly \& Company|
+| Chryssa Kappatou     | This research is funded by an Engineering and Physical Sciences Research Council / Eli Lilly Prosperity Partnership (EPSRC EP/T005556/1) and by Eli Lilly \& Company|
