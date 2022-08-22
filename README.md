@@ -1,5 +1,5 @@
 # AcRoPLS
-AcRoPLS (**Ac**urate **Ro**bust **PLS**) provides a methodology to create accurate and robust PLS models based on solving a data-driven optimization problem that couples data pre-processing and model regression to a single optimization step. The accuracy objective is evaluated based on the performance of the generated model on predicting the model output on a test set. For the robustness objective, a state-of-the-art metric based on the method of moments applied for different realizations of a known variability source evaluated again on a test set. For more information on the method, please refer to: *add link*
+AcRoPLS (**Ac**urate **Ro**bust **PLS**) provides a methodology to create accurate and robust PLS models based on solving a data-driven optimization problem that couples data pre-processing and model regression to a single optimization step. The accuracy objective is evaluated based on the performance of the generated model on predicting the model output on a test set. For the robustness objective, a state-of-the-art metric based on the method of moments applied for different realizations of a known variability source evaluated again on a test set. For more information on the method, please refer to: [add link]()
 
 
 ## Requirements 
