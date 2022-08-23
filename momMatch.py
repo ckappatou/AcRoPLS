@@ -1,7 +1,8 @@
-# Moment matching functions
+# Moment matching and divide categories functions
 
-# C.Kappatou, R. Misener, S. Garcia
-# 16.05.2022
+# C.Kappatou, J.Odgers, R. Misener, S. Garcia
+# 22.08.2022
+
 import pandas as pd
 import numpy as np
 import pyphi_new as phi
