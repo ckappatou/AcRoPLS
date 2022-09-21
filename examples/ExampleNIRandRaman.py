@@ -7,10 +7,19 @@ import pandas as pd
 import numpy as np
 import pyphi as phi
 import matplotlib.pyplot as plt
-import momMatch as mm
 import scipy.io
 from sklearn.model_selection import train_test_split
 from entmoot.optimizer.entmoot_minimize import entmoot_minimize
+
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir) 
+
+import momMatch as mm
 
 def plot_spectra(X, *, xaxis=False, plot_title='Main Title', xaxis_label='X- axis', yaxis_label='Y- axis', pltName=False):
     """
@@ -289,7 +298,7 @@ class BBFunc:
 import sys
 original_stdout = sys.stdout # Save a reference to the original standard output
 
-DataFile = 'Raman.xlsx'
+DataFile = 'data/Raman.xlsx'
 Robmetric = 1 # categorical for which rob metric; allowed values 1,2,3 ; default=1; optional argument
 DisMeas = 1 # categorical for which distance metric; allowed values 1 (euclidean),2(manhattan); default=1; optional argument
 

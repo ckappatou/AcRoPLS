@@ -7,12 +7,22 @@ import pandas as pd
 import numpy as np
 import pyphi as phi
 import matplotlib.pyplot as plt
-import momMatch as mm
+
 import itertools
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from entmoot.optimizer.entmoot_minimize import entmoot_minimize
 from cycler import cycler
+
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir) 
+
+import momMatch as mm
 
 def plot_spectra(X, *, xaxis=False, plot_title='Main Title', xaxis_label='X- axis', yaxis_label='Y- axis', pltName=False):
     """
@@ -479,8 +489,8 @@ class BBFunc:
             Categories_ = np.unique(self.Z.values[:, catOfInterest_index]).tolist()
             categoryid_ = list(self.Z.values[:, catOfInterest_index])
             # randomly select one to be used for validation only
-            random.seed(2)
-            categoryid_for_val = random.choice(categoryid_)
+            np.random.seed(2)
+            categoryid_for_val = np.random.choice(categoryid_)
 
             # train /test with two cat val with one more
             self.id_val = self.Z[
@@ -735,7 +745,7 @@ class BBFunc:
 import sys
 original_stdout = sys.stdout # Save a reference to the original standard output
 
-DataFile = 'data_test4.csv'
+DataFile = 'data/data_test4.csv'
 Robmetric = 1 # categorical for which rob metric; allowed values 1,2,3 ; default=1; optional argument
 DisMeas = 2 # categorical for which distance metric; allowed values 1 (euclidean),2(manhattan); default=1; optional argument
 
@@ -760,7 +770,7 @@ for i in range(0,1): # random splits
             n_calls=2*100,  # 70,
             # n_points=10000,
             base_estimator="GBRT",
-            std_estimator="BDD",
+            # std_estimator="BDD",
             n_initial_points=2*45,  # 45,
             initial_point_generator="random",
             acq_func="LCB",

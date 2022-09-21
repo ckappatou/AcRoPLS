@@ -15,6 +15,19 @@ The optimization is performed using [ENTMOOT](https://github.com/cog-imperial/en
 |pandas |         1.2.4|
 |scikit-learn | 0.24.2|
 |scipy |       1.6.3|
+|openpyxl|3.0.10|
+
+### entmoot install 
+This requires version 0.2.2 of ENTMOOT. See listo of requirements from https://github.com/cog-imperial, then install 0.2.2 of ENTMOOT using 
+
+    pip install git+https://github.com/cog-imperial/entmoot.git@8e6e0fbfaba7823269065ee3c88d56d354167bb9
+
+### Running Examples
+
+Navigate to the examples file in your terminal and run the desired example, eg. 
+
+    python3 InitialExample.py
+
 
 ## Contributors 
 
