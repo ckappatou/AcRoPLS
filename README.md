@@ -22,7 +22,7 @@ This requires version 0.2.2 of ENTMOOT. See list of requirements from https://gi
 
     pip install git+https://github.com/cog-imperial/entmoot.git@8e6e0fbfaba7823269065ee3c88d56d354167bb9
 
-## Running Examples
+#### Running Examples
 
 Navigate to the examples file in your terminal and run the desired example, e.g. 
 
