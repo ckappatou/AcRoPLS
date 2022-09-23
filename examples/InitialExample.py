@@ -709,7 +709,7 @@ class BBFunc:
                                                 color=['r', 'g', 'b'],
                                                 label=['$\hat{y}_1$', '$\hat{y}_2$', '$\hat{y}_3$']) #['0', '0.33', '0.66']
 
-                    hatches = ['.', '/', '']
+                    hatches = ['...', '///', '']
                     for patch_set, hatch in zip(patches, hatches):
                         for patch in patch_set.patches:
                             patch.set_hatch(hatch)
