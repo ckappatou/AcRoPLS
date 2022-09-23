@@ -5,10 +5,9 @@
 
 import pandas as pd
 import numpy as np
-import pyphi_new as phi
-import pyphi_plots_newSim as pp
+import pyphi as phi
+import pyphi_plots as pp
 import matplotlib.pyplot as plt
-import preprocessing_new as prep
 from itertools import product
 from sklearn.model_selection import train_test_split
 from sklearn import linear_model
