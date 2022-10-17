@@ -1,5 +1,5 @@
-# AcRoPLS
-AcRoPLS (**Ac**urate **Ro**bust **PLS**) provides a methodology to create accurate and robust PLS models based on solving a data-driven optimization problem that couples data pre-processing and model regression to a single optimization step. The accuracy objective is evaluated based on the performance of the generated model on predicting the model output on a test set. For the robustness objective, a novel metric based on the method of moments applied for different realizations of a known variability source evaluated again on a test set. For more information on the method, please refer to: [add link]()
+# AcRoPLS :classical_building:
+AcRoPLS (**Ac**urate **Ro**bust **PLS**) provides a methodology to create accurate and robust PLS models based on solving a data-driven optimization problem that couples data pre-processing and model regression to a single optimization step. The accuracy objective is evaluated based on the performance of the generated model on predicting the model output on a test set. For the robustness objective, a novel metric based on the method of moments applied for different realizations of a known variability source evaluated again on a test set. For more information on the method, please refer to: [add paper link]().
 
 
 ## Requirements 
@@ -27,6 +27,8 @@ This requires version 0.2.2 of ENTMOOT. See list of requirements from https://gi
 Navigate to the examples file in your terminal and run the desired example, e.g. 
 
     python3 InitialExample.py
+    
+Note that the third example in [add paper link]() is not provided in this repository due to confidentiallity of the industrial dataset used for that particular case study.
 
 
 ## Contributors 
