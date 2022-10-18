@@ -1,6 +1,6 @@
 # Moment matching and divide categories functions
 
-# C.Kappatou, J.Odgers, R. Misener, S. Garcia
+# C.Kappatou, J.Odgers, S. Garcia
 # 22.08.2022
 
 import pandas as pd
