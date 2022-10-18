@@ -1,6 +1,6 @@
 # NIR and Raman spectroscopy example solved in ENTMOOT for different objectives
 
-# C.Kappatou, J.Odgers, R. Misener, S. Garcia
+# C.Kappatou, J.Odgers, S. Garcia
 # 22.08.2022
 
 import pandas as pd
@@ -262,7 +262,7 @@ class BBFunc:
         # Here set the weights among the different variation sources if no intuition set to unity/
         # if wished the different sources my get different weights or turned off (setting weight to zero)
         varSourceWeightA = 1 * 2
-        varSourceWeightB = 1*1
+        varSourceWeightB = 1 * 1
         M1sum = p_sumA*varSourceWeightA*M1sumA + p_sumB*varSourceWeightB*M1sumB
         M2sum = p_sumA*varSourceWeightA*M2sumA + p_sumB*varSourceWeightB*M2sumB
 
@@ -270,7 +270,7 @@ class BBFunc:
         print(M2sumA, M2sumB)
 
         # # # Define Objective Function; Action Point
-        beta = 1*0.005 # relative weight between first and second moment
+        beta = 0.005 # relative weight between first and second moment
 
         if self.of == 1:  # accuracy
             alphaRob = 0
