@@ -458,10 +458,11 @@ def predvsobsC3(mvmobj, X, Y, *, CLASSID=False, colorby=False, x_space=False,plo
     return
 
 class BBFunc:
-    def __init__(self, Data, *, Rob=1, Dis=1, OF=1, SNV=True, SG=True, Mcenter=True, pltHisOn=False, excludeCat=False, pltOn=False, stepWs=True, random=0, pltName=False):
+    def __init__(self, Data, *, Rob=1, Dis=1, OF=1, beta=False, SNV=True, SG=True, Mcenter=True, pltHisOn=False, excludeCat=False, pltOn=False, stepWs=True, random=0, pltName=False):
         self.rob_def = Rob
         self.dis = Dis
         self.of = OF
+        self.beta = beta
         self.SNV = SNV
         self.Mcenter = Mcenter
         self.SG = SG
@@ -488,21 +489,20 @@ class BBFunc:
             catOfInterest_index = 1
             Categories_ = np.unique(self.Z.values[:, catOfInterest_index]).tolist()
             categoryid_ = list(self.Z.values[:, catOfInterest_index])
-            # randomly select one to be used for validation only
-            np.random.seed(2)
-            categoryid_for_val = np.random.choice(categoryid_)
+            # select one to be used for validation only
+            categoryid_for_val = 2.0
 
             # train /test with two cat val with one more
             self.id_val = self.Z[
-                self.Z['continuos interfearence 1'] == categoryid_for_val]
-            self.y_val = self.Y[self.Z['continuos interfearence 1'] == categoryid_for_val]
-            x_val = X[self.Z['continuos interfearence 1'] == categoryid_for_val]
+                self.Z['continuous interference 1'] == categoryid_for_val]
+            self.y_val = self.Y[self.Z['continuous interference 1'] == categoryid_for_val]
+            x_val = X[self.Z['continuous interference 1'] == categoryid_for_val]
 
 
-            self.Y = self.Y[self.Z['continuos interfearence 1'] != categoryid_for_val]
-            X = X[self.Z['continuos interfearence 1'] != categoryid_for_val]
+            self.Y = self.Y[self.Z['continuous interference 1'] != categoryid_for_val]
+            X = X[self.Z['continuous interference 1'] != categoryid_for_val]
             self.Z = self.Z[
-                self.Z['continuos interfearence 1'] != categoryid_for_val]
+                self.Z['continuous interference 1'] != categoryid_for_val]
 
         try:
             x_val
@@ -556,7 +556,7 @@ class BBFunc:
             # # # Preprocessing Step 2: SavGol
             if self.SG:  # turn on SG
                 if self.stepWs:
-                    ws = x[0] * 5 + 5
+                    ws = x[0] * 5 + 5 # plus five to start from 10 times 5 the stepsize
                 else:
                     ws = x[0]
                 do = x[1]
@@ -650,9 +650,8 @@ class BBFunc:
                                             CLASSID=self.id_test, cat_rob_index=1, rob_def=self.rob_def, dis=self.dis)
 
             # # # Define Objective Function; Action Point
-            beta = 25  # relative weight between first and second moment
 
-            MM = M1sum + beta * M2sum
+            MM = M1sum + self.beta * M2sum
 
             if self.of == 1:  # accuracy
                 alphaRob = 0
@@ -672,7 +671,7 @@ class BBFunc:
 
             # # # PredvsObs Plots; Optional Action Point
             if self.pltOn:
-                colorby = 'continuos interfearence 1'
+                colorby = 'continuous interference 1'
 
                 predvsobsC(pls_raman_calibration, x_test_snv_savgol, self.y_test, CLASSID=self.id_test,colorby=colorby, xaxis_label='Observed',
                           yaxis_label='Predicted',na=na, SNV=self.SNV, excludeCat=self.excludeCat)
@@ -745,39 +744,56 @@ class BBFunc:
 import sys
 original_stdout = sys.stdout # Save a reference to the original standard output
 
-DataFile = 'data/data_test4.csv'
+DataFile = 'data/dataSimulated.csv'
 Robmetric = 1 # categorical for which rob metric; allowed values 1,2,3 ; default=1; optional argument
 DisMeas = 2 # categorical for which distance metric; allowed values 1 (euclidean),2(manhattan); default=1; optional argument
+beta = 15 # relative weight between first and second moment
 
-bb_func0 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, SG=False, SNV=False, Mcenter=False, pltOn=True)
+# # # Define bounds for the decision variables
+ws_lb = 1
+ws_ub = 7
+od_lb = 0
+od_ub = 2
+op_lb = 1
+op_ub = 4
+na_lb = 1
+na_ub = 8
+
+bb_func0 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, beta=beta, SG=False, SNV=False, Mcenter=False, pltOn=True)
 for i in range(1,5):
     bb_func0.evaluate([i])
 
-bb_func1 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, SG=False, pltHisOn=True, pltOn=True)
+bb_func1 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, beta=beta, SG=False, pltHisOn=True, pltOn=True)
 for i in range(1,5):
     bb_func1.evaluate([i])
 
-bb_func2 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, SG=False, excludeCat=True, pltOn=True)
+bb_func2 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, beta=beta, SG=False, excludeCat=True, pltOn=True)
 for i in range(1,9):
     bb_func2.evaluate([i])
 
+# spectra plots
+bb_func3 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, beta=beta, pltOn=True, pltName='CS1_spectraACC')
+bb_func3.evaluate([3, 0, 2, 3]) #acc
+bb_func3 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, beta=beta, pltOn=True, OF=2, pltName='CS1_spectraROB')
+bb_func3.evaluate([5, 2, 4, 2]) #rob
+
 for i in range(0,1): # random splits
     for j in range(1,3): #different objectives
-        bb_func = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, OF=j, random=i)
+        bb_func = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, OF=j, random=i, beta=beta)
         res = entmoot_minimize(
             bb_func.evaluate,
-            [(1, 7), (0, 2), (1, 4), (1, 8)],
-            n_calls=2*100,  # 70,
+            [(ws_lb, ws_ub), (od_lb, od_ub), (op_lb, op_ub), (na_lb, na_ub)],
+            n_calls=200,  # 70,
             # n_points=10000,
             base_estimator="GBRT",
             # std_estimator="BDD",
-            n_initial_points=2*45,  # 45,
+            n_initial_points=90,  # 45,
             initial_point_generator="random",
             acq_func="LCB",
             acq_optimizer="global",
             x0=None,
             y0=None,
-            random_state=100,
+            random_state=250,
             acq_func_kwargs={
                 "kappa": 1.96
             },
@@ -789,7 +805,7 @@ for i in range(0,1): # random splits
         bb_func.evaluate(res.x)
         with open("resultsInitialExample.txt", "a") as f:
             sys.stdout = f  # Change the standard output to the file we created.
-            print("\n" + "ENTMOOT calls 300 init 135" + "\n")
+            print("\n" + "ENTMOOT calls 200 init 90" + "\n")
             print("\n" + "random" + str(i) + "\n")
             print("\n" +"obj" + str(j) + "\n")
             print("parameters " + str(res.x) + "\n")
@@ -801,11 +817,11 @@ for i in range(0,1): # random splits
 for o in range(1,3):
     objValue=1e10
     objX= []
-    for i in range(1,8):
-        for j in range(0,3):
-            for k in range(1,5):
-                for l in range(1,9):
-                    bb_func = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, OF=o)
+    for i in range(ws_lb,ws_ub+1):
+        for j in range(od_lb,od_ub+1):
+            for k in range(op_lb,op_ub+1):
+                for l in range(na_lb,na_ub+1):
+                    bb_func = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, beta=beta, OF=o)
                     res=bb_func.evaluate([i, j, k, l])
                     if res<objValue:
                         objValue=res
@@ -820,9 +836,3 @@ for o in range(1,3):
         print("objective " + "%0.05f" % objValue + "\n")
         bb_func.evaluate(objX)
         sys.stdout = original_stdout  # Reset the standard output to its original value
-
-# spectra plots
-bb_func3 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, pltOn=True, pltName='CS1_spectraACC')
-bb_func3.evaluate([2, 0, 1, 3]) #acc
-bb_func3 = BBFunc(DataFile, Rob=Robmetric, Dis=DisMeas, pltOn=True, OF=2, pltName='CS1_spectraROB')
-bb_func3.evaluate([6, 2, 2, 2]) #rob
