@@ -1,7 +1,11 @@
-# NIR and Raman spectroscopy example solved in ENTMOOT for different objectives
-
-# C.Kappatou, J.Odgers, S. Garcia
-# 22.08.2022
+##
+# ExampleNIRandRaman.py
+#
+# NIR and Raman spectroscopy example
+#
+# C.D. Kappatou, J.Odgers, S. Garcia, R.Misener: "Optimization Methods for Developing Efficient Chemometric Models", 2022.
+# 
+##
 
 import pandas as pd
 import numpy as np
