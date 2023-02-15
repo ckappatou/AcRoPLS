@@ -101,22 +101,22 @@ class BBFunc:
         # self.Y, _ = phi.clean_low_variances(self.Y)
         # self.Z, _ = phi.clean_low_variances(self.Z)
 
-        # # # Split data set to train and test/validation
+        # # # Split data set to train and validation/test
         try:
-            x_val
+            x_test
         except NameError:
-            x_val = None
+            x_test = None
         try:
-            x_val
+            x_test
         except NameError:
-            x_val = None
-        if x_val is None: # we do not have an additional independent validation set
-            x_train0, x_test, y_train0, self.y_test, id_train0, self.id_test \
+            x_test = None
+        if x_test is None: # we do not have an additional independent test set
+            x_train0, x_val, y_train0, self.y_val, id_train0, self.id_val \
                 = train_test_split(X, self.Y, self.Z, test_size=0.2, random_state=random)
-            x_train, x_val, self.y_train, self.y_val, self.id_train, self.id_val \
-                = train_test_split(x_train0, y_train0, id_train0,test_size=0.125, random_state=random)  # 0.125 x 0.8 = 0.1
-        else: # we have an additional independent validation set
             x_train, x_test, self.y_train, self.y_test, self.id_train, self.id_test \
+                = train_test_split(x_train0, y_train0, id_train0,test_size=0.125, random_state=random)  # 0.125 x 0.8 = 0.1
+        else: # we have an additional independent test set
+            x_train, x_val, self.y_train, self.y_val, self.id_train, self.id_val \
                 = train_test_split(X, self.Y, self.Z, test_size=0.3, random_state=random)
 
         # # Test Plot 1 ; Raw Data
@@ -126,37 +126,37 @@ class BBFunc:
         # # # Write splitted sets to .mat file; optional
         x_train1 = x_train.iloc[:,1:]
         x_train1 = x_train1.to_numpy()
-        x_test1 = x_test.iloc[:, 1:]
-        x_test1 = x_test1.to_numpy()
         x_val1 = x_val.iloc[:, 1:]
         x_val1 = x_val1.to_numpy()
+        x_test1 = x_test.iloc[:, 1:]
+        x_test1 = x_test1.to_numpy()
         self.y_train1 = self.y_train.iloc[:, 1:]
         self.y_train1 = self.y_train1.to_numpy()
-        self.y_test1 = self.y_test.iloc[:, 1:]
-        self.y_test1 = self.y_test1.to_numpy()
         self.y_val1 = self.y_val.iloc[:, 1:]
         self.y_val1 = self.y_val1.to_numpy()
-        # note the following are the samples names not the categories as indicated above by id_test and id_train
+        self.y_test1 = self.y_test.iloc[:, 1:]
+        self.y_test1 = self.y_test1.to_numpy()
+        # note the following are the samples names not the categories as indicated above by id_val and id_train
         s_id_train1 = x_train.iloc[:, 0]
         s_id_train1 = s_id_train1.to_numpy()
-        s_id_test1 = x_test.iloc[:, 0]
-        s_id_test1 =s_id_test1.to_numpy()
         s_id_val1 = x_val.iloc[:, 0]
         s_id_val1 =s_id_val1.to_numpy()
+        s_id_test1 = x_test.iloc[:, 0]
+        s_id_test1 =s_id_test1.to_numpy()
 
-        scipy.io.savemat('cs2matlab.mat', dict(x=x_train1, y=self.y_train1, z=s_id_train1, x_t=x_test1, y_t=self.y_test1,
-                                           z_t=s_id_test1, x_v=x_val1, y_v=self.y_val1,
-                                           z_v=s_id_val1))
+        scipy.io.savemat('cs2matlab.mat', dict(x=x_train1, y=self.y_train1, z=s_id_train1, x_t=x_val1, y_t=self.y_val1,
+                                           z_t=s_id_val1, x_v=x_test1, y_v=self.y_test1,
+                                           z_v=s_id_test1))
 
         # # # Preprocessing Step 1:
         if SNV: # turn on svn
             self.x_train_snv = phi.snv(x_train)
-            self.x_test_snv = phi.snv(x_test)
             self.x_val_snv = phi.snv(x_val)
+            self.x_test_snv = phi.snv(x_test)
         else: # turn off svn
             self.x_train_snv = x_train
-            self.x_test_snv = x_test
             self.x_val_snv = x_val
+            self.x_test_snv = x_test
 
         self.SG = SG
     def evaluate(self,x):
@@ -174,13 +174,13 @@ class BBFunc:
                 return obj
             else:
                 x_train_snv_savgol, M = phi.savgol(ws, do, po, self.x_train_snv)
-                x_test_snv_savgol, M_t = phi.savgol(ws, do, po, self.x_test_snv)
                 x_val_snv_savgol, M_v = phi.savgol(ws, do, po, self.x_val_snv)
+                x_test_snv_savgol, M_t = phi.savgol(ws, do, po, self.x_test_snv)
         else: # turn off SG
             na = x[0]
             x_train_snv_savgol = self.x_train_snv
-            x_test_snv_savgol = self.x_test_snv
             x_val_snv_savgol = self.x_val_snv
+            x_test_snv_savgol = self.x_test_snv
 
         # # Test Plot 2; Pre-processed Data
         if self.pltOn:
@@ -194,16 +194,16 @@ class BBFunc:
                                         mcsY='center', shush=True)
 
         # # # Predictions Using Aboved-created Regression Model
-        # Prediction Test Set
-        pls_raman_calibration_predictions = phi.pls_pred(x_test_snv_savgol,
+        # Prediction Validation Set
+        pls_raman_calibration_predictions = phi.pls_pred(x_val_snv_savgol,
                                                          pls_raman_calibration)
 
         # Prediction Training/Calibration Set
         pls_raman_calibration_predictionsC = phi.pls_pred(x_train_snv_savgol,
                                                           pls_raman_calibration)
 
-        # Prediction Accuracy Validation Set
-        pls_raman_calibration_predictionsV = phi.pls_pred(x_val_snv_savgol,
+        # Prediction Accuracy Test Set
+        pls_raman_calibration_predictionsT = phi.pls_pred(x_test_snv_savgol,
                                                           pls_raman_calibration)
 
         # # # Diagnostics
@@ -218,38 +218,38 @@ class BBFunc:
         RMSPEYc = np.sqrt(PRESSYc / Yhatc_.size)
         print("%0.05f" % RMSPEYc)
 
+        # Accuracy Validation Set
+        if isinstance(self.y_val, np.ndarray):
+            y_val_ = self.y_val
+        else:
+            y_val_ = np.array(self.y_val.values[:, 1:]).astype(float)
+        Yhat_ = pls_raman_calibration_predictions['Yhat']
+        errorY_ = y_val_ - Yhat_
+        PRESSY = np.sum(errorY_ ** 2)
+        RMSPEY = np.sqrt(PRESSY / Yhat_.size)
+        print("%0.05f" % RMSPEY)
+
         # Accuracy Test Set
         if isinstance(self.y_test, np.ndarray):
             y_test_ = self.y_test
         else:
             y_test_ = np.array(self.y_test.values[:, 1:]).astype(float)
-        Yhat_ = pls_raman_calibration_predictions['Yhat']
-        errorY_ = y_test_ - Yhat_
-        PRESSY = np.sum(errorY_ ** 2)
-        RMSPEY = np.sqrt(PRESSY / Yhat_.size)
-        print("%0.05f" % RMSPEY)
-
-        # Accuracy Val Set
-        if isinstance(self.y_val, np.ndarray):
-            y_val_ = self.y_val
-        else:
-            y_val_ = np.array(self.y_val.values[:, 1:]).astype(float)
-        Yhatv_ = pls_raman_calibration_predictionsV['Yhat']
-        errorYv_ = y_val_ - Yhatv_
-        PRESSYv = np.sum(errorYv_ ** 2)
-        RMSPEYv = np.sqrt(PRESSYv / Yhatv_.size)
-        print("%0.05f" % RMSPEYv)
+        Yhatt_ = pls_raman_calibration_predictionsT['Yhat']
+        errorYt_ = y_test_ - Yhatt_
+        PRESSYt = np.sum(errorYt_ ** 2)
+        RMSPEYt = np.sqrt(PRESSYt / Yhatt_.size)
+        print("%0.05f" % RMSPEYt)
 
         # Moment Matching; Action Point
         # Here you need to specify if you have subcategories and call the moment matching function \
         # multiple times accordingly to the variability categories/subcategories of your choice
         # The following can be done alternative with training set (change test with train)
-        M1sumA, M2sumA = mm.momMatch(pls_raman_calibration, x_test_snv_savgol, self.y_test,
-                                CLASSID=self.id_test, cat_rob_index=2, subclass_index=1, \
+        M1sumA, M2sumA = mm.momMatch(pls_raman_calibration, x_val_snv_savgol, self.y_val,
+                                CLASSID=self.id_val, cat_rob_index=2, subclass_index=1, \
                                      rob_def=self.rob_def, dis=self.dis)
 
-        M1sumB, M2sumB = mm.momMatch(pls_raman_calibration, x_test_snv_savgol, self.y_test,
-                                CLASSID=self.id_test, cat_rob_index=1, subclass_index=2, \
+        M1sumB, M2sumB = mm.momMatch(pls_raman_calibration, x_val_snv_savgol, self.y_val,
+                                CLASSID=self.id_val, cat_rob_index=1, subclass_index=2, \
                                      rob_def=self.rob_def, dis=self.dis)
 
         if self.msource == 0:
