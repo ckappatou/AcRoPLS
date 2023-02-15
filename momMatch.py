@@ -10,7 +10,6 @@
 import pandas as pd
 import numpy as np
 import pyphi as phi
-import pyphi_plots as pp
 import matplotlib.pyplot as plt
 from itertools import product
 from sklearn.model_selection import train_test_split
